@@ -29,26 +29,30 @@ public class AccountIdentityService {
     public LdapResponse getLdap(String idCode) {
         ObjectMapper mapper = new ObjectMapper();
         LdapResponse obj = null;
+        log.info("Sending ldap call to account-identity service");
         try {
             obj = mapper.readValue(new URL(accountIdentityServer+"/v1/ldap/"+idCode), LdapResponse.class);
         } catch (Exception e) {
-            //log.error("Failed loading ldap data from account-identity", e);
+            log.error("Failed loading ldap data from account-identity", e);
             // TODO: Figure out the reasond and throw Validation exception if needed
             throw new RuntimeException();
         }
+        log.info("... ldap query done");
         return obj;
     }
 
     public Account getAddress(String idCode) {
         ObjectMapper mapper = new ObjectMapper();
         AccountsResponse accountsResponse = null;
+        log.info("Sending account info call to account-identity service");
         try {
             accountsResponse = mapper.readValue(new URL(accountIdentityServer+"/v1/accounts?ownerId="+idCode), AccountsResponse.class);
         } catch (Exception e) {
-            //log.error("Failed loading account data from account-identity", e);
+            log.error("Failed loading account data from account-identity", e);
             // TODO: Figure out the reasond and throw Validation exception if needed
             throw new RuntimeException(e);
         }
+        log.info("... account info query done");
 
         Account account = accountsResponse.getAccounts().get(0);
 

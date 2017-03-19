@@ -20,6 +20,7 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+    maven { url "http://dl.bintray.com/ethereum/maven" }
 }
 
 
@@ -30,6 +31,11 @@ dependencies {
 	compile('io.springfox:springfox-swagger2:2.6.1')
 	compile('io.springfox:springfox-swagger-ui:2.6.1')
 	compile('org.projectlombok:lombok')
+
+	compile('org.ethereum:ethereumj-core:1.3.1-RELEASE') {
+		exclude group: "org.slf4j", module: "slf4j-log4j12"
+	}
+
 	testCompile("org.springframework.boot:spring-boot-starter-test") {
 		exclude module: "spock-core"
 	}
