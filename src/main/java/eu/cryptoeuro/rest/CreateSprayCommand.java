@@ -11,6 +11,8 @@ import javax.validation.constraints.AssertTrue;
 
 import lombok.Data;
 
+@Getter
+@Setter
 @Data
 public class CreateSprayCommand {
     @NotNull

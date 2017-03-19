@@ -18,6 +18,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 
 import eu.cryptoeuro.service.SprayService;
+import eu.cryptoeuro.rest.exception.ValidationException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -40,10 +41,11 @@ public class SprayController {
                         @ApiIgnore @Valid Errors errors) {
 
         if (errors.hasErrors()) {
-//            throw new
+            //log.error("Request validation failed", errors);
+            throw new ValidationException(errors);
         }
 
-        Spray spray = sprayService.spray();
+        Spray spray = sprayService.spray(createSprayCommand);
 
         return spray;
     }
