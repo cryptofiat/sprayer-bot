@@ -43,8 +43,8 @@ public class SprayService {
     @Autowired
     private WalletServerService walletServerService;
 
-    private String senderPrivateKey = "TODO";
-    private String senderAccount = "TODO";
+    private String senderPrivateKey = "TODO read from conf";
+    private String senderAccount = "TODO read from conf";
     private Long sprayAmount = 1L;
     // If balance falls below this then send slack message that funds are running out
     private Long sprayAmountThreshold = 100L;
@@ -76,7 +76,7 @@ public class SprayService {
 
         CreateTransferCommand createTransferCommand = new CreateTransferCommand();
         createTransferCommand.setSourceAccount(senderAccount);
-        createTransferCommand.setTargetAccount(receiverIdentityAccount.getAddress());
+        createTransferCommand.setTargetAccount("0x" + receiverIdentityAccount.getAddress());
         createTransferCommand.setAmount(sprayAmount);
         createTransferCommand.setFee(FeeConstant.FEE);
         createTransferCommand.setNonce(senderWalletAccount.getNonce() + 1);

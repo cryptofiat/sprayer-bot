@@ -9,8 +9,10 @@ import javax.validation.constraints.AssertTrue;
 import eu.cryptoeuro.walletServer.FeeConstant;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class CreateTransferCommand {
+public class CreateTransferCommand implements Serializable {
 
     @NotNull
     @Size(min = 1, max = 256)

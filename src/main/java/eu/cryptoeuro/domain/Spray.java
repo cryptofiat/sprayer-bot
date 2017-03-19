@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-public class Spray {
-    String test = "test";
+public class Spray
+
+    String result = "OK";
 }

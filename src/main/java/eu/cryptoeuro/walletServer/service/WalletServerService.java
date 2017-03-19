@@ -1,5 +1,6 @@
 package eu.cryptoeuro.walletServer.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.cryptoeuro.walletServer.command.CreateTransferCommand;
 import eu.cryptoeuro.walletServer.response.Nonce;
@@ -33,10 +34,31 @@ public class WalletServerService {
     public Transfer transfer(CreateTransferCommand createTransferCommand) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        HttpEntity<String> request = new HttpEntity<String>(createTransferCommand.toString(), headers);
+
+        /*
+        String json = "{"+
+                "'sourceAccount':'0xa5f1eea6d0a14c8e37cad8019f67b9ca19768f55',"+
+                "'targetAccount': 'a5f1eea6d0a14c8e37cad8019f67b9ca19768f55',"+
+                "'amount': 1,"+
+                "'fee': 1,"+
+                "'nonce': 1,"+
+                "'signature': '572416e32187b7cf09eb02b82fa6afbed8357043fa0c899384a288fa7f8da5e216af491a5c54a3e55d616add2c91e69e62c287db1c9ec962be07bc7d0ff489c01c'"+
+                "}";
+       */
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json;
+        try {
+            json = mapper.writeValueAsString(createTransferCommand);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpEntity<Object> request = new HttpEntity<Object>(json, headers);
 
         log.info("Sending create transfer call to wallet");
-        log.info("JSON:\n"+request.toString());
+        log.info("JSON:\n" + request.toString());
+
         Transfer transfer = restTemplate.postForObject(walletServer+"/v1/transfers", request, Transfer.class);
         log.info("Create transfer response: " + transfer.toString());
 
