@@ -3,6 +3,7 @@ package eu.cryptoeuro.service;
 import eu.cryptoeuro.accountIdentity.response.AccountsResponse;
 import eu.cryptoeuro.accountIdentity.response.Account;
 import eu.cryptoeuro.domain.Spray;
+import eu.cryptoeuro.accountIdentity.service.AccountIdentityService;
 
 import eu.cryptoeuro.accountIdentity.response.LdapResponse;
 
@@ -25,42 +26,14 @@ import java.io.IOException;
 @Slf4j
 public class SprayService {
 
-    private String accountIdentityServer = "http://id.euro2.ee:8080"; // account-identity node on AWS
+    @Autowired
+    private AccountIdentityService accountIdentityService;
 
     public Spray spray(CreateSprayCommand createSprayCommand) {
-        LdapResponse ldap = getLdap(createSprayCommand.getIdCode());
-        Account accounts = getAddress(createSprayCommand.getIdCode());
+        LdapResponse ldap = accountIdentityService.getLdap(createSprayCommand.getIdCode());
+        Account accounts = accountIdentityService.getAddress(createSprayCommand.getIdCode());
 
         return new Spray();
 
-    }
-
-    private LdapResponse getLdap(String idCode) {
-        ObjectMapper mapper = new ObjectMapper();
-        LdapResponse obj = null;
-        try {
-            obj = mapper.readValue(new URL(accountIdentityServer+"/v1/ldap/"+idCode), LdapResponse.class);
-        } catch (Exception e) {
-            //log.error("Failed loading ldap data from account-identity", e);
-            // TODO: Figure out the reasond and throw Validation exception if needed
-            throw new RuntimeException();
-        }
-        return obj;
-    }
-
-    private Account getAddress(String idCode) {
-        ObjectMapper mapper = new ObjectMapper();
-        AccountsResponse accountsResponse = null;
-        try {
-            accountsResponse = mapper.readValue(new URL(accountIdentityServer+"/v1/accounts?ownerId="+idCode), AccountsResponse.class);
-        } catch (Exception e) {
-            //log.error("Failed loading account data from account-identity", e);
-            // TODO: Figure out the reasond and throw Validation exception if needed
-            throw new RuntimeException(e);
-        }
-
-        Account account = accountsResponse.getAccounts().get(0);
-
-        return account;
     }
 }
