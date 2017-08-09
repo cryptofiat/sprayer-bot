@@ -32,6 +32,7 @@ import org.ethereum.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 import org.apache.commons.codec.binary.Base64;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -51,8 +52,15 @@ public class SprayService {
 
 
     public Spray spray(CreateSprayCommand createSprayCommand) {
+        Spray result = new Spray();
         LdapResponse ldap = accountIdentityService.getLdap(createSprayCommand.getIdCode());
         eu.cryptoeuro.accountIdentity.response.Account receiverIdentityAccount = accountIdentityService.getAddress(createSprayCommand.getIdCode());
+
+        if (hasReceivedTransfers(receiverIdentityAccount.getAddress())) {
+            result.setResult(false);
+            return result;
+        }
+
         eu.cryptoeuro.walletServer.response.Account senderWalletAccount = walletServerService.getAccount(senderAccount);
 
         // Check that it is bigger than sprayAmount
@@ -83,9 +91,20 @@ public class SprayService {
         createTransferCommand.setSignature(Hex.toHexString(signatureArg));
 
         Transfer transfer = walletServerService.transfer(createTransferCommand);
+        result.setResult(true);
+        result.setBlockHash(transfer.getBlockHash());
 
-        return new Spray();
+        //send to transfer-info
+        return result;
 
+    }
+
+    private boolean hasReceivedTransfers(String address) {
+        List<Transfer> transfers = walletServerService.getTransfers(address);
+        if (transfers.isEmpty())
+                return false;
+        else
+            return true;
     }
 
     // TODO: Refactor signing methods to separate package
