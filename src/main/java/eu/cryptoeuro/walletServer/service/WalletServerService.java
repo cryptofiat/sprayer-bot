@@ -3,30 +3,26 @@ package eu.cryptoeuro.walletServer.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.cryptoeuro.walletServer.command.CreateTransferCommand;
-import eu.cryptoeuro.walletServer.response.Nonce;
 import eu.cryptoeuro.walletServer.response.Account;
+import eu.cryptoeuro.walletServer.response.Nonce;
 import eu.cryptoeuro.walletServer.response.Transfer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.net.URL;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
 @Component
 @Slf4j
 public class WalletServerService {
 
     private String walletServer = "http://wallet.euro2.ee:8080"; // wallet-server node on AWS
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     protected RestTemplate restTemplate = new RestTemplate();
 
@@ -46,7 +42,6 @@ public class WalletServerService {
                 "}";
        */
 
-        ObjectMapper mapper = new ObjectMapper();
         String json;
         try {
             json = mapper.writeValueAsString(createTransferCommand);
@@ -67,7 +62,6 @@ public class WalletServerService {
     }
 
     public Nonce getNonce(String address) {
-        ObjectMapper mapper = new ObjectMapper();
         Nonce nonce = null;
         try {
             nonce = mapper.readValue(new URL(walletServer+"/v1/accounts/"+address+"/nonce"), Nonce.class);
@@ -80,7 +74,6 @@ public class WalletServerService {
     }
 
     public Account getAccount(String address) {
-        ObjectMapper mapper = new ObjectMapper();
         Account account = null;
         log.info("Sending account info call to wallet-server");
         try {
@@ -92,6 +85,20 @@ public class WalletServerService {
         log.info("... account info done");
 
         return account;
+    }
+
+    public List<Transfer> getTransfers(String address) {
+        List<Transfer> transfers;
+        log.info("Getting list of transfers from wallet-server");
+        try {
+            // TODO : refactor calling wallet server
+            transfers = mapper.readValue(new URL(walletServer+"/v1/accounts/"+address+"/transfers"), List.class);
+        } catch (Exception e) {
+            log.error("Failed getting transfer list from wallet-server", e);
+            throw new RuntimeException(e);
+        }
+        log.info("Retrieved transfer list successfully");
+        return transfers;
     }
 
 }
