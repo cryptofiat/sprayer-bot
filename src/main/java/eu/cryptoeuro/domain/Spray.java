@@ -7,5 +7,6 @@ import lombok.Setter;
 @Data
 public class Spray {
 
-    String result = "OK";
+    boolean result;
+    String blockHash;
 }
