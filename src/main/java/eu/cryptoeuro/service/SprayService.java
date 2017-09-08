@@ -1,5 +1,6 @@
 package eu.cryptoeuro.service;
 
+import eu.cryptoeuro.domain.TransferInfoRecord;
 import eu.cryptoeuro.walletServer.FeeConstant;
 import eu.cryptoeuro.accountIdentity.response.AccountsResponse;
 import eu.cryptoeuro.domain.Spray;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.cryptoeuro.rest.CreateSprayCommand;
 import eu.cryptoeuro.walletServer.command.CreateTransferCommand;
 import eu.cryptoeuro.walletServer.response.Transfer;
+import eu.cryptoeuro.walletServer.service.TransferInfoService;
 import eu.cryptoeuro.walletServer.service.WalletServerService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +45,9 @@ public class SprayService {
 
     @Autowired
     private WalletServerService walletServerService;
+
+    @Autowired
+    private TransferInfoService transferInfoService;
 
     private String senderPrivateKey = "TODO read from conf";
     private String senderAccount = "TODO read from conf";
@@ -94,7 +99,12 @@ public class SprayService {
         result.setResult(true);
         result.setBlockHash(transfer.getBlockHash());
 
-        //send to transfer-info
+        TransferInfoRecord transferInfoRecord = new TransferInfoRecord();
+        transferInfoRecord.setSenderIdCode(senderAccount);
+        transferInfoRecord.setReceiverIdCode(createSprayCommand.getIdCode());
+        transferInfoRecord.setReference("Hello from spray bot!");
+
+        transferInfoService.send(transfer.getBlockHash(), transferInfoRecord);
         return result;
 
     }
