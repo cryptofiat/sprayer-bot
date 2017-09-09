@@ -48,7 +48,7 @@ jobs:
 
       - deploy:
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" -o "${CIRCLE_BRANCH}" == "circleci-integration"  ]; then
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
               scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  build/libs/* ubuntu@wallet.euro2.ee:~/sprayer-bot
               ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ubuntu@wallet.euro2.ee sudo systemctl restart sprayer-bot
             fi
