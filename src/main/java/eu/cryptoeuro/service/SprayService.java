@@ -1,31 +1,26 @@
 package eu.cryptoeuro.service;
 
+import eu.cryptoeuro.accountIdentity.response.LdapResponse;
+import eu.cryptoeuro.accountIdentity.service.AccountIdentityService;
+import eu.cryptoeuro.domain.Spray;
+import eu.cryptoeuro.rest.CreateSprayCommand;
 import eu.cryptoeuro.transferInfo.command.TransferInfoRecord;
+import eu.cryptoeuro.transferInfo.service.TransferInfoService;
 import eu.cryptoeuro.util.KeyUtil;
 import eu.cryptoeuro.walletServer.FeeConstant;
-import eu.cryptoeuro.domain.Spray;
-import eu.cryptoeuro.accountIdentity.service.AccountIdentityService;
-
-import eu.cryptoeuro.accountIdentity.response.LdapResponse;
-
-import eu.cryptoeuro.rest.CreateSprayCommand;
 import eu.cryptoeuro.walletServer.command.CreateTransferCommand;
 import eu.cryptoeuro.walletServer.response.Transfer;
-import eu.cryptoeuro.transferInfo.service.TransferInfoService;
 import eu.cryptoeuro.walletServer.service.WalletServerService;
 import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.codec.binary.Base64;
+import org.ethereum.crypto.ECKey;
+import org.ethereum.crypto.HashUtil;
+import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
-
 import java.io.IOException;
-
-import org.ethereum.crypto.ECKey;
-import org.ethereum.crypto.HashUtil;
-import org.spongycastle.util.encoders.Hex;
-import org.apache.commons.codec.binary.Base64;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -102,7 +97,7 @@ public class SprayService {
         transferInfoRecord.setReceiverIdCode(createSprayCommand.getIdCode());
         transferInfoRecord.setReferenceText("Hello from a generous bot!");
 
-        transferInfoService.send(transfer.getId().substring(2), transferInfoRecord);
+        transferInfoService.send(without0x(transfer.getId()), transferInfoRecord);
         log.info("Spray successful for recipient " + createSprayCommand.getIdCode());
         return result;
 

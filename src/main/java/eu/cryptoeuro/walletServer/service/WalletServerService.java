@@ -92,7 +92,7 @@ public class WalletServerService {
         log.info("Getting list of transfers from wallet-server");
         try {
             // TODO : refactor calling wallet server
-            transfers = mapper.readValue(new URL(walletServer+"/v1/accounts/"+address+"/transfers"), List.class);
+            transfers = mapper.readValue(new URL(walletServer+"/v1/accounts/0x"+address+"/transfers"), mapper.getTypeFactory().constructCollectionType(List.class, Transfer.class));
         } catch (Exception e) {
             log.error("Failed getting transfer list from wallet-server", e);
             throw new RuntimeException(e);
