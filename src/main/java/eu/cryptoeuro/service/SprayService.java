@@ -59,6 +59,7 @@ public class SprayService {
 
         if (hasReceivedTransfers(receiverIdentityAccount.getAddress())) {
             result.setResult(false);
+            log.info("Spraying the account is not allowed - recipient already got some money.");
             return result;
         }
 
@@ -101,14 +102,18 @@ public class SprayService {
         transferInfoRecord.setReceiverIdCode(createSprayCommand.getIdCode());
         transferInfoRecord.setReference("Hello from a generous bot!");
 
-        transferInfoService.send(transfer.getBlockHash(), transferInfoRecord);
+        transferInfoService.send(transfer.getBlockHash().substring(2), transferInfoRecord);
+        log.info("Spray successful for recipient " + createSprayCommand.getIdCode());
         return result;
 
     }
 
     private boolean hasReceivedTransfers(String address) {
         List<Transfer> transfers = walletServerService.getTransfers(address);
-        return (!transfers.isEmpty());
+        if (transfers.isEmpty())
+            return false;
+        else
+            return true;
     }
 
     // TODO: Refactor signing methods to separate package
