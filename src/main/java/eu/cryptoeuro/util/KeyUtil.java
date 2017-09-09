@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class KeyUtil {
 
     public ECKey getSprayerKey () {
-        File file = new File(System.getProperty("user.home"),"filename");
+        File file = new File(System.getProperty("user.home"),".Sprayer.key");
         try {
             String keyHex = toString(new FileInputStream(file));
             return ECKey.fromPrivate(Hex.decode(keyHex));
