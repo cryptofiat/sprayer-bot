@@ -93,7 +93,7 @@ public class SprayService {
         result.setBlockHash(transfer.getBlockHash());
 
         TransferInfoRecord transferInfoRecord = new TransferInfoRecord();
-        transferInfoRecord.setSenderIdCode("Generous bot");
+        transferInfoRecord.setSenderIdCode("99900010050");
         transferInfoRecord.setReceiverIdCode(createSprayCommand.getIdCode());
         transferInfoRecord.setReferenceText("Hello from a generous bot!");
 
