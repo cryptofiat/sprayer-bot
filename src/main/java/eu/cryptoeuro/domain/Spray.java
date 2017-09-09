@@ -6,5 +6,5 @@ import lombok.Data;
 public class Spray {
 
     boolean result;
-    String blockHash;
+    String transferId;
 }

@@ -90,7 +90,7 @@ public class SprayService {
 
         Transfer transfer = walletServerService.transfer(createTransferCommand);
         result.setResult(true);
-        result.setBlockHash(transfer.getBlockHash());
+        result.setTransferId(transfer.getId());
 
         TransferInfoRecord transferInfoRecord = new TransferInfoRecord();
         transferInfoRecord.setSenderIdCode("99900010050");
