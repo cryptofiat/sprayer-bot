@@ -102,7 +102,7 @@ public class SprayService {
         transferInfoRecord.setReceiverIdCode(createSprayCommand.getIdCode());
         transferInfoRecord.setReference("Hello from a generous bot!");
 
-        transferInfoService.send(transfer.getBlockHash().substring(2), transferInfoRecord);
+        transferInfoService.send(transfer.getId().substring(2), transferInfoRecord);
         log.info("Spray successful for recipient " + createSprayCommand.getIdCode());
         return result;
 
@@ -110,10 +110,7 @@ public class SprayService {
 
     private boolean hasReceivedTransfers(String address) {
         List<Transfer> transfers = walletServerService.getTransfers(address);
-        if (transfers.isEmpty())
-            return false;
-        else
-            return true;
+        return (transfers.size() != 0);
     }
 
     // TODO: Refactor signing methods to separate package
