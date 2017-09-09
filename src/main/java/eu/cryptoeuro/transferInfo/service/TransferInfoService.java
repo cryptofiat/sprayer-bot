@@ -1,16 +1,14 @@
-package eu.cryptoeuro.walletServer.service;
+package eu.cryptoeuro.transferInfo.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.cryptoeuro.domain.TransferInfoRecord;
+import eu.cryptoeuro.transferInfo.command.TransferInfoRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 @Slf4j

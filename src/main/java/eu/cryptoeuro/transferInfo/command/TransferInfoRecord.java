@@ -1,4 +1,4 @@
-package eu.cryptoeuro.domain;
+package eu.cryptoeuro.transferInfo.command;
 
 import lombok.Data;
 

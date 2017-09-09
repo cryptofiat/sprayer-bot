@@ -1,36 +1,29 @@
 package eu.cryptoeuro.service;
 
-import eu.cryptoeuro.domain.TransferInfoRecord;
+import eu.cryptoeuro.transferInfo.command.TransferInfoRecord;
+import eu.cryptoeuro.util.KeyUtil;
 import eu.cryptoeuro.walletServer.FeeConstant;
-import eu.cryptoeuro.accountIdentity.response.AccountsResponse;
 import eu.cryptoeuro.domain.Spray;
 import eu.cryptoeuro.accountIdentity.service.AccountIdentityService;
 
 import eu.cryptoeuro.accountIdentity.response.LdapResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.cryptoeuro.rest.CreateSprayCommand;
 import eu.cryptoeuro.walletServer.command.CreateTransferCommand;
 import eu.cryptoeuro.walletServer.response.Transfer;
-import eu.cryptoeuro.walletServer.service.TransferInfoService;
+import eu.cryptoeuro.transferInfo.service.TransferInfoService;
 import eu.cryptoeuro.walletServer.service.WalletServerService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
 
 import java.io.IOException;
 
 import org.ethereum.crypto.ECKey;
 import org.ethereum.crypto.HashUtil;
-import org.ethereum.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 import org.apache.commons.codec.binary.Base64;
 import java.nio.ByteBuffer;
@@ -40,20 +33,23 @@ import java.util.List;
 @Slf4j
 public class SprayService {
 
-    @Autowired
     private AccountIdentityService accountIdentityService;
-
-    @Autowired
     private WalletServerService walletServerService;
-
-    @Autowired
     private TransferInfoService transferInfoService;
+    private KeyUtil keyUtil;
 
-    private String senderPrivateKey = "TODO read from conf";
-    private String senderAccount = "TODO read from conf";
+    private String senderAccount = "0xaf71e622792f47119411ce019f4ca1b8d993496e";
     private Long sprayAmount = 1L;
     // If balance falls below this then send slack message that funds are running out
     private Long sprayAmountThreshold = 100L;
+
+    @Autowired
+    public SprayService(AccountIdentityService accountIdentityService, WalletServerService walletServerService, TransferInfoService transferInfoService, KeyUtil keyUtil) {
+        this.accountIdentityService = accountIdentityService;
+        this.walletServerService = walletServerService;
+        this.transferInfoService = transferInfoService;
+        this.keyUtil = keyUtil;
+    }
 
 
     public Spray spray(CreateSprayCommand createSprayCommand) {
@@ -78,7 +74,8 @@ public class SprayService {
             // TODO: Send slack message
         }
 
-        ECKey signer = ECKey.fromPrivate(Hex.decode(without0x(senderPrivateKey)));
+        ECKey signer = keyUtil.getSprayerKey();
+        //ECKey.fromPrivate(Hex.decode(without0x(senderPrivateKey)));
         byte[] signatureArg;
 
         try {
@@ -100,9 +97,9 @@ public class SprayService {
         result.setBlockHash(transfer.getBlockHash());
 
         TransferInfoRecord transferInfoRecord = new TransferInfoRecord();
-        transferInfoRecord.setSenderIdCode(senderAccount);
+        transferInfoRecord.setSenderIdCode("Generous bot");
         transferInfoRecord.setReceiverIdCode(createSprayCommand.getIdCode());
-        transferInfoRecord.setReference("Hello from spray bot!");
+        transferInfoRecord.setReference("Hello from a generous bot!");
 
         transferInfoService.send(transfer.getBlockHash(), transferInfoRecord);
         return result;
@@ -111,10 +108,7 @@ public class SprayService {
 
     private boolean hasReceivedTransfers(String address) {
         List<Transfer> transfers = walletServerService.getTransfers(address);
-        if (transfers.isEmpty())
-                return false;
-        else
-            return true;
+        return (!transfers.isEmpty());
     }
 
     // TODO: Refactor signing methods to separate package
