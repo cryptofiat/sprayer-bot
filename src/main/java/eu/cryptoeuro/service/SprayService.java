@@ -89,7 +89,6 @@ public class SprayService {
         createTransferCommand.setSignature(Hex.toHexString(signatureArg));
 
         Transfer transfer = walletServerService.transfer(createTransferCommand);
-        result.setResult(true);
         result.setTransferId(transfer.getId());
 
         TransferInfoRecord transferInfoRecord = new TransferInfoRecord();
