@@ -38,7 +38,7 @@ public class SprayService {
     private TransferInfoService transferInfoService;
     private KeyUtil keyUtil;
 
-    private String senderAccount = "0xaf71e622792f47119411ce019f4ca1b8d993496e";
+    private String senderAccountAddress = "0x90d0e61c5846780a6608bacbd77633b067bb13fc";
     private Long sprayAmount = 1L;
     // If balance falls below this then send slack message that funds are running out
     private Long sprayAmountThreshold = 100L;
@@ -62,7 +62,7 @@ public class SprayService {
             return result;
         }
 
-        eu.cryptoeuro.walletServer.response.Account senderWalletAccount = walletServerService.getAccount(senderAccount);
+        eu.cryptoeuro.walletServer.response.Account senderWalletAccount = walletServerService.getAccount(senderAccountAddress);
 
         // Check that it is bigger than sprayAmount
         if (senderWalletAccount.getBalance() < sprayAmount) {
@@ -85,7 +85,7 @@ public class SprayService {
         }
 
         CreateTransferCommand createTransferCommand = new CreateTransferCommand();
-        createTransferCommand.setSourceAccount(senderAccount);
+        createTransferCommand.setSourceAccount(senderAccountAddress);
         createTransferCommand.setTargetAccount("0x" + receiverIdentityAccount.getAddress());
         createTransferCommand.setAmount(sprayAmount);
         createTransferCommand.setFee(FeeConstant.FEE);
