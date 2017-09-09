@@ -100,7 +100,7 @@ public class SprayService {
         TransferInfoRecord transferInfoRecord = new TransferInfoRecord();
         transferInfoRecord.setSenderIdCode("Generous bot");
         transferInfoRecord.setReceiverIdCode(createSprayCommand.getIdCode());
-        transferInfoRecord.setReference("Hello from a generous bot!");
+        transferInfoRecord.setReferenceText("Hello from a generous bot!");
 
         transferInfoService.send(transfer.getId().substring(2), transferInfoRecord);
         log.info("Spray successful for recipient " + createSprayCommand.getIdCode());

@@ -15,5 +15,5 @@ public class TransferInfoRecord {
     @Size(min = 1, max = 256)
     String receiverIdCode;
 
-    String reference;
+    String referenceText;
 }

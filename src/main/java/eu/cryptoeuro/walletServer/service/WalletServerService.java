@@ -97,7 +97,7 @@ public class WalletServerService {
             log.error("Failed getting transfer list from wallet-server", e);
             throw new RuntimeException(e);
         }
-        log.info("Retrieved transfer list successfully");
+        log.info("... retrieved transfer list successfully");
         return transfers;
     }
 
