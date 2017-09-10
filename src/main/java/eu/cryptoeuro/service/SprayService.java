@@ -34,7 +34,6 @@ public class SprayService {
     private KeyUtil keyUtil;
 
     private String senderAccountAddress = "0x90d0e61c5846780a6608bacbd77633b067bb13fc";
-    private Long sprayAmount = 1L;
     // If balance falls below this then send slack message that funds are running out
     private Long sprayAmountThreshold = 100L;
 
@@ -57,7 +56,7 @@ public class SprayService {
 //            log.info("Spraying the account is not allowed - recipient already got some money.");
 //            return result;
 //        }
-
+        Long sprayAmount = createSprayCommand.getAmount();
         eu.cryptoeuro.walletServer.response.Account senderWalletAccount = walletServerService.getAccount(senderAccountAddress);
 
         // Check that it is bigger than sprayAmount
