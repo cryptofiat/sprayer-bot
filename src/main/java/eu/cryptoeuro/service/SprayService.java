@@ -51,11 +51,10 @@ public class SprayService {
         LdapResponse ldap = accountIdentityService.getLdap(createSprayCommand.getIdCode());
         eu.cryptoeuro.accountIdentity.response.Account receiverIdentityAccount = accountIdentityService.getAddress(createSprayCommand.getIdCode());
 
-//        if (hasReceivedTransfers(receiverIdentityAccount.getAddress())) {
-//            result.setResult(false);
-//            log.info("Spraying the account is not allowed - recipient already got some money.");
-//            return result;
-//        }
+        if (hasReceivedTransfers(receiverIdentityAccount.getAddress())) {
+            log.info("Spraying the account is not allowed - recipient already got some money.");
+            return result;
+        }
         Long sprayAmount = createSprayCommand.getAmount();
         eu.cryptoeuro.walletServer.response.Account senderWalletAccount = walletServerService.getAccount(senderAccountAddress);
 
