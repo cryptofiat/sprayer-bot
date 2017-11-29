@@ -2,7 +2,7 @@ package eu.cryptoeuro.walletServer.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.cryptoeuro.walletServer.command.CreateTransferCommand;
+import eu.cryptoeuro.wallet.client.CreateTransferCommand;
 import eu.cryptoeuro.walletServer.response.Account;
 import eu.cryptoeuro.walletServer.response.Nonce;
 import eu.cryptoeuro.walletServer.response.Transfer;
