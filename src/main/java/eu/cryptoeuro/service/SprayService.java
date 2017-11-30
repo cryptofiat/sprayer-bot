@@ -9,9 +9,9 @@ import eu.cryptoeuro.transferInfo.service.TransferInfoService;
 import eu.cryptoeuro.util.KeyUtil;
 import eu.cryptoeuro.wallet.client.CreateTransferCommand;
 import eu.cryptoeuro.wallet.client.WalletClientService;
-import eu.cryptoeuro.walletServer.FeeConstant;
-import eu.cryptoeuro.walletServer.response.Transfer;
-import eu.cryptoeuro.walletServer.service.WalletServerService;
+import eu.cryptoeuro.wallet.client.FeeConstant;
+import eu.cryptoeuro.wallet.client.response.Transfer;
+import eu.cryptoeuro.wallet.client.service.WalletServerService;
 import lombok.extern.slf4j.Slf4j;
 import org.ethereum.crypto.ECKey;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class SprayService {
             return result;
         }
         Long sprayAmount = createSprayCommand.getAmount();
-        eu.cryptoeuro.walletServer.response.Account senderWalletAccount = walletServerService.getAccount(senderAccountAddress);
+        eu.cryptoeuro.wallet.client.response.Account senderWalletAccount = walletServerService.getAccount(senderAccountAddress);
 
         // Check that it is bigger than sprayAmount
         if (senderWalletAccount.getBalance() < sprayAmount) {
