@@ -46,7 +46,7 @@ public class SprayService {
         Spray result = new Spray();
         eu.cryptoeuro.accountIdentity.response.Account receiverIdentityAccount = accountIdentityService.getAddress(createSprayCommand.getIdCode());
 
-        if (false && hasReceivedTransfers(receiverIdentityAccount.getAddress())) {
+        if (hasReceivedTransfers(receiverIdentityAccount.getAddress())) {
             log.info("Spraying the account is not allowed - recipient already got some money.");
             return result;
         }
