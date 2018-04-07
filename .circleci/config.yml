@@ -44,13 +44,15 @@ jobs:
 
       - add_ssh_keys:
           fingerprints:
-            - "b5:55:0e:be:54:39:7c:8c:8e:8f:9b:8d:5a:a1:f0:75"
+            - "a3:88:f3:21:cf:a5:a5:0b:32:b2:6a:9e:da:6d:ca:e9"
 
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  build/libs/* ubuntu@wallet.euro2.ee:~/sprayer-bot
-              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ubuntu@wallet.euro2.ee sudo systemctl restart sprayer-bot
+              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@wallet.euro2.ee /bin/mkdir /opt/sprayer-bot/builds/"${CIRCLE_BUILD_NUM}"
+              scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  build/libs/* sprayer-bot@34.242.69.20:/opt/sprayer-bot/builds/"${CIRCLE_BUILD_NUM}"/
+              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@wallet.euro2.ee cd /opt/sprayer-bot; /bin/ln -sf builds/"${CIRCLE_BUILD_NUM}"/*.jar sprayer-bot-latest.jar;
+              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@wallet.euro2.ee /bin/systemctl --user restart sprayer-bot
             fi
 
 
