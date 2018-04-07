@@ -49,10 +49,10 @@ jobs:
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@wallet.euro2.ee /bin/mkdir /opt/sprayer-bot/builds/"${CIRCLE_BUILD_NUM}"
+              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@w34.242.69.20 /bin/mkdir /opt/sprayer-bot/builds/"${CIRCLE_BUILD_NUM}"
               scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  build/libs/* sprayer-bot@34.242.69.20:/opt/sprayer-bot/builds/"${CIRCLE_BUILD_NUM}"/
-              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@wallet.euro2.ee cd /opt/sprayer-bot; /bin/ln -sf builds/"${CIRCLE_BUILD_NUM}"/*.jar sprayer-bot-latest.jar;
-              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@wallet.euro2.ee /bin/systemctl --user restart sprayer-bot
+              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@w34.242.69.20 cd /opt/sprayer-bot; /bin/ln -sf builds/"${CIRCLE_BUILD_NUM}"/*.jar sprayer-bot-latest.jar;
+              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@w34.242.69.20 /bin/systemctl --user restart sprayer-bot
             fi
 
 
