@@ -1,0 +1,14 @@
+spray:
+  address: "0x90d0e61c5846780a6608bacbd77633b067bb13fc"
+  limit: 100
+  warning:
+    webhook: "https://hooks.slack.com/services/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"
+    threshold: 2000
+
+service:
+  account-identity:
+    url: "http://id.euro2.ee:8080"
+  transfer-info:
+    url: "http://wallet.euro2.ee:8000"
+  wallet-server:
+    url: "http://wallet.euro2.ee:8080"

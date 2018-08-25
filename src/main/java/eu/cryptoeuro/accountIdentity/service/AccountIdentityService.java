@@ -11,6 +11,7 @@ import java.net.URL;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,7 +25,8 @@ import java.io.IOException;
 @Slf4j
 public class AccountIdentityService {
 
-    private String accountIdentityServer = "http://id.euro2.ee:8080"; // account-identity node on AWS
+    @Value("${service.account-identity.url}")
+    private String accountIdentityServer;
 
     public LdapResponse getLdap(String idCode) {
         ObjectMapper mapper = new ObjectMapper();
