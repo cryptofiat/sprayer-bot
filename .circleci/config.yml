@@ -38,6 +38,6 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@sprayer-bot.euro2.ee /bin/mkdir /opt/sprayer-bot/builds/"${CIRCLE_BUILD_NUM}"
               scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  build/libs/* sprayer-bot@sprayer-bot.euro2.ee:/opt/sprayer-bot/builds/"${CIRCLE_BUILD_NUM}"/
-              echo "cd /opt/sprayer-bot && /bin/ln -sf builds/34/*.jar sprayer-bot-latest.jar" | ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@sprayer-bot.euro2.ee
+              echo "cd /opt/sprayer-bot && /bin/ln -sf builds/"${CIRCLE_BUILD_NUM}"/*.jar sprayer-bot-latest.jar" | ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@sprayer-bot.euro2.ee
               ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sprayer-bot@sprayer-bot.euro2.ee sudo /bin/systemctl restart sprayer-bot
             fi

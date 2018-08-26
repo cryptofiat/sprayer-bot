@@ -4,6 +4,7 @@ import eu.cryptoeuro.accountIdentity.response.LdapResponse;
 import eu.cryptoeuro.accountIdentity.service.AccountIdentityService;
 import eu.cryptoeuro.domain.Spray;
 import eu.cryptoeuro.rest.CreateSprayCommand;
+import eu.cryptoeuro.rest.exception.RecipientNotEligibleException;
 import eu.cryptoeuro.transferInfo.command.TransferInfoRecord;
 import eu.cryptoeuro.transferInfo.service.TransferInfoService;
 import eu.cryptoeuro.util.KeyUtil;
@@ -15,6 +16,7 @@ import eu.cryptoeuro.wallet.client.service.WalletServerService;
 import lombok.extern.slf4j.Slf4j;
 import org.ethereum.crypto.ECKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,18 +29,23 @@ public class SprayService {
     private WalletServerService walletServerService;
     private WalletClientService walletClientService;
     private TransferInfoService transferInfoService;
+    private SlackService slackService;
     private KeyUtil keyUtil;
 
-    private String senderAccountAddress = "0x90d0e61c5846780a6608bacbd77633b067bb13fc";
+    @Value("${spray.address}")
+    private String senderAccountAddress;
+    @Value("${spray.limit}")
+    private Long sprayLimit;
     // If balance falls below this then send slack message that funds are running out
-    private Long sprayAmountThreshold = 100L;
+    @Value("${spray.warning.threshold}")
+    private Long sprayAmountThreshold;
 
     @Autowired
-    public SprayService(AccountIdentityService accountIdentityService, WalletServerService walletServerService, WalletClientService walletClientService, TransferInfoService transferInfoService, KeyUtil keyUtil) {
+    public SprayService(SlackService slackService, AccountIdentityService accountIdentityService, WalletServerService walletServerService, WalletClientService walletClientService, TransferInfoService transferInfoService, KeyUtil keyUtil) {
         this.accountIdentityService = accountIdentityService;
         this.walletServerService = walletServerService;
         this.walletClientService = walletClientService;
-        this.transferInfoService = transferInfoService;
+        this.slackService = slackService;
         this.keyUtil = keyUtil;
     }
 
@@ -47,9 +54,10 @@ public class SprayService {
         eu.cryptoeuro.accountIdentity.response.Account receiverIdentityAccount = accountIdentityService.getAddress(createSprayCommand.getIdCode());
 
         if (hasReceivedTransfers(receiverIdentityAccount.getAddress())) {
-            log.info("Spraying the account is not allowed - recipient already got some money.");
-            return result;
+            log.error("Spraying the account is not allowed - recipient already got some money.");
+            throw new RecipientNotEligibleException("Recipient has received payments already");
         }
+
         Long sprayAmount = createSprayCommand.getAmount();
         eu.cryptoeuro.wallet.client.response.Account senderWalletAccount = walletServerService.getAccount(senderAccountAddress);
 
@@ -60,6 +68,7 @@ public class SprayService {
 
         // If smaller than threshold then send slack message that funds are running out
         if (senderWalletAccount.getBalance() < sprayAmountThreshold) {
+            slackService.sprayerBalanceLow(senderWalletAccount.getBalance(), senderWalletAccount.toString());
             // TODO: Send slack message
         }
 

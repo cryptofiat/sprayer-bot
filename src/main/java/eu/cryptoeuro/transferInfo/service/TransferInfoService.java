@@ -8,13 +8,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 @Slf4j
 public class TransferInfoService {
 
-    private String transferInfo = "http://wallet.euro2.ee:8000/";
+    @Value("${service.transfer-info.url}")
+    private String transferInfo;
     private ObjectMapper mapper = new ObjectMapper();
 
     protected RestTemplate restTemplate = new RestTemplate();
